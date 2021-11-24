@@ -1,3 +1,5 @@
+// ignore_for_file: constant_identifier_names
+
 import 'dart:convert';
 
 List<Users> usersFromJson(String str) => List<Users>.from(json.decode(str).map((x) => Users.fromJson(x)));
@@ -65,10 +67,6 @@ class Users {
         siteAdmin: json["site_admin"],
     );
 
-  String? get email => null;
-
-  String? get name => null;
-
     Map<String, dynamic> toJson() => {
         "login": login,
         "id": id,
@@ -91,11 +89,11 @@ class Users {
     };
 }
 
-enum Type { USER, ORGANIZATION }
+enum Type { User, Organization }
 
 final typeValues = EnumValues({
-    "Organization": Type.ORGANIZATION,
-    "User": Type.USER
+    "Organization": Type.Organization,
+    "User": Type.User
 });
 
 class EnumValues<T> {
