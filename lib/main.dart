@@ -1,99 +1,83 @@
-import 'package:flutter/material.dart';
-import 'dart:convert';
 
-import 'package:flutter/services.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_application_1/json_model.dart';
+// import 'Users  .dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(apidemo());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
 
+class apidemo extends StatefulWidget {
+  apidemo({Key? key}) : super(key: key);
+
+  @override
+  _apidemoState createState() => _apidemoState();
+}
+
+class _apidemoState extends State<apidemo> {
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      // Hide the debug banner
-      debugShowCheckedModeBanner: false,
-      title: 'Json.com',
-      home: HomePage(),
-    );
+    return Container();
   }
 }
 
-class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+class Service {
+  static const String url = 'https://api.github.com/users';
 
-  @override
-  _HomePageState createState() => _HomePageState();
+  static get https => null;
+  static Future<List<Users>> getUsers() async{
+    try {
+      final response = await https.get(url);
+      if (200 == response.statusCode) {
+        final List<Users> users = usersFromJson(response.body);
+        return users;
+        
+      }else{
+        // ignore: deprecated_member_use
+        return <Users>[];
+      }
+    } catch (e) {
+      // ignore: deprecated_member_use
+      return <Users>[];
+    }
+  }
+   late List<Users> _users;
+   late bool _isLoading;
+
+   @override
+   void initState() {
+     _isLoading = true;
+     Services.getUsers().then((users) {
+       _users = users;
+       _isLoading = false;
+     }); 
+   }
+   @override
+   Widget build(BuildContext context) {
+     return  Scaffold(
+       appBar: AppBar(
+         title: Text(_isLoading ?'Load Data': 'Users'),
+       ),
+       body: Container(
+         color: Colors.blue,
+         child: ListView.builder(
+           itemCount: null == _users? 0 : _users.length,
+           itemBuilder: (context, index){
+           Users users = _users as Users;
+           return ListTile(
+            //  title: Text(users.name),
+            //  subtitle: Text(users.email),
+           );
+         }),
+       ),
+     );
+   }
+
+  
 }
 
-class _HomePageState extends State<HomePage> {
-  List _items = [];
-int n=0;
-bool disableLoad=false;
-  // Fetch content from the json file
-  Future<void> readJson() async {
-    final String response = await rootBundle.loadString('assets/sample.json');
-    final data = await json.decode(response);
-    setState(() {
-      _items = data["items"];
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: const Text(
-          'Json.com',
-        ),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(25),
-        child: Column(
-          children: [
-            ElevatedButton(
-              child: const Text('Load Data'),
-              onPressed:(){
-                if(disableLoad==false){
-                readJson();
-                setState(() {
-                            n++;
-                            if(n==_items.length){
-                setState(() {
-                            disableLoad=true;
-                          });
-                           }
-
-                });
-                }
-                else{}
-              } 
-            ),
-
-            // Display the data loaded from sample.json
-            _items.isNotEmpty
-                ? Expanded(
-                    child: ListView.builder(
-                      itemCount: n,
-                      itemBuilder: (context, index) {
-                        return Card(
-                          margin: const EdgeInsets.all(10),
-                          child: ListTile(
-                            leading: Text(_items[index]["id"]),
-                            title: Text(_items[index]["name"]),
-                            subtitle: Text(_items[index]["description"]),
-                          ),
-                        );
-                      },
-                    ),
-                  )
-                : Container()
-          ],
-        ),
-      ),
-    );
-  }
+class Services {
+  static getUsers() {}
 }

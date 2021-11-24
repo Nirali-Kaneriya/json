@@ -1,43 +1,113 @@
-
 import 'dart:convert';
 
-import 'package:flutter/services.dart';
+List<Users> usersFromJson(String str) => List<Users>.from(json.decode(str).map((x) => Users.fromJson(x)));
+String usersToJson(List<Users> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
 
-Future<void> readJson() async {
-    final String response = await rootBundle.loadString('assets/sample.json');
-    final data = await json.decode(response);
-
-}
-
-// To parse this JSON data, do
-//
-//     final myData = myDataFromJson(jsonString);
-
-
-List<MyData> myDataFromJson(String str) => List<MyData>.from(json.decode(str).map((x) => MyData.fromJson(x)));
-
-String myDataToJson(List<MyData> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
-
-class MyData {
-    MyData({
-        this.id,
-        this.name,
-        this.description,
+class Users {
+    Users({
+        required this.login,
+        required this.id,
+        required this.nodeId,
+        required this.avatarUrl,
+        required this.gravatarId,
+        required this.url,
+        required this.htmlUrl,
+        required this.followersUrl,
+        required this.followingUrl,
+        required this.gistsUrl,
+        required this.starredUrl,
+        required this.subscriptionsUrl,
+        required this.organizationsUrl,
+        required this.reposUrl,
+        required this.eventsUrl,
+        required this.receivedEventsUrl,
+        required this.type,
+        required this.siteAdmin,
     });
 
-    String? id;
-    String? name;
-    String? description;
+    String login;
+    int id;
+    String nodeId;
+    String avatarUrl;
+    String gravatarId;
+    String url;
+    String htmlUrl;
+    String followersUrl;
+    String followingUrl;
+    String gistsUrl;
+    String starredUrl;
+    String subscriptionsUrl;
+    String organizationsUrl;
+    String reposUrl;
+    String eventsUrl;
+    String receivedEventsUrl;
+    Type? type;
+    bool siteAdmin;
 
-    factory MyData.fromJson(Map<String, dynamic> json) => MyData(
+    factory Users.fromJson(Map<String, dynamic> json) => Users(
+        login: json["login"],
         id: json["id"],
-        name: json["name"],
-        description: json["description"],
+        nodeId: json["node_id"],
+        avatarUrl: json["avatar_url"],
+        gravatarId: json["gravatar_id"],
+        url: json["url"],
+        htmlUrl: json["html_url"],
+        followersUrl: json["followers_url"],
+        followingUrl: json["following_url"],
+        gistsUrl: json["gists_url"],
+        starredUrl: json["starred_url"],
+        subscriptionsUrl: json["subscriptions_url"],
+        organizationsUrl: json["organizations_url"],
+        reposUrl: json["repos_url"],
+        eventsUrl: json["events_url"],
+        receivedEventsUrl: json["received_events_url"],
+        type: json["type"] != null ? typeValues.map[json["type"]] : null,
+        siteAdmin: json["site_admin"],
     );
 
+  String? get email => null;
+
+  String? get name => null;
+
     Map<String, dynamic> toJson() => {
+        "login": login,
         "id": id,
-        "name": name,
-        "description": description,
+        "node_id": nodeId,
+        "avatar_url": avatarUrl,
+        "gravatar_id": gravatarId,
+        "url": url,
+        "html_url": htmlUrl,
+        "followers_url": followersUrl,
+        "following_url": followingUrl,
+        "gists_url": gistsUrl,
+        "starred_url": starredUrl,
+        "subscriptions_url": subscriptionsUrl,
+        "organizations_url": organizationsUrl,
+        "repos_url": reposUrl,
+        "events_url": eventsUrl,
+        "received_events_url": receivedEventsUrl,
+        "type": typeValues.reverse[type],
+        "site_admin": siteAdmin,
     };
+}
+
+enum Type { USER, ORGANIZATION }
+
+final typeValues = EnumValues({
+    "Organization": Type.ORGANIZATION,
+    "User": Type.USER
+});
+
+class EnumValues<T> {
+    Map<String, T> map;
+    late Map<T, String> reverseMap;
+
+    EnumValues(this.map);
+
+    Map<T, String> get reverse {
+        if (reverseMap == null) {
+            reverseMap = map.map((k, v) => new MapEntry(v, k));
+        }
+        return reverseMap;
+    }
 }
