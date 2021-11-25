@@ -43,7 +43,7 @@ class Users {
     String reposUrl;
     String eventsUrl;
     String receivedEventsUrl;
-    Type? type;
+    String type;
     bool siteAdmin;
 
     factory Users.fromJson(Map<String, dynamic> json) => Users(
@@ -63,7 +63,7 @@ class Users {
         reposUrl: json["repos_url"],
         eventsUrl: json["events_url"],
         receivedEventsUrl: json["received_events_url"],
-        type: json["type"] != null ? typeValues.map[json["type"]] : null,
+        type: json["type"],
         siteAdmin: json["site_admin"],
     );
 
@@ -84,28 +84,8 @@ class Users {
         "repos_url": reposUrl,
         "events_url": eventsUrl,
         "received_events_url": receivedEventsUrl,
-        "type": typeValues.reverse[type],
+        "type": type,
         "site_admin": siteAdmin,
     };
 }
 
-enum Type { User, Organization }
-
-final typeValues = EnumValues({
-    "Organization": Type.Organization,
-    "User": Type.User
-});
-
-class EnumValues<T> {
-    Map<String, T> map;
-    late Map<T, String> reverseMap;
-
-    EnumValues(this.map);
-
-    Map<T, String> get reverse {
-        if (reverseMap == null) {
-            reverseMap = map.map((k, v) => new MapEntry(v, k));
-        }
-        return reverseMap;
-    }
-}

@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/json_model.dart';
-import 'dart:convert' as convert;
 import 'package:http/http.dart' as http;
 void main() {
   runApp(const MyApiDemo());
@@ -59,7 +58,6 @@ class MyHomeClass extends StatefulWidget {
 
 class _MyHomeClassState extends State<MyHomeClass> {
 
-
  bool _isLoading= true;
  List<Users> ?_users;
  @override
@@ -82,20 +80,44 @@ class _MyHomeClassState extends State<MyHomeClass> {
        ),
        body: Container(
          color: Colors.blue,
-         child: ListView.builder(
-           itemCount: null == _users ? 0 : _users!.length,
-           itemBuilder: (context, index){
-           Users users = _users![index];
-           print("======> ${users}");
-           return  Card(
-             child: ListTile(
-               leading: CircleAvatar(
-                 backgroundImage: NetworkImage(users.avatarUrl, scale: 10),
-               ),
-               title: Text(users.login.toString()),
+         child: GridView.count(
+        //    itemCount: null == _users ? 0 : _users!.length,
+        //    itemBuilder: (context, index){
+        //    Users users = _users![index];
+        //    print("======> ${users}");
+        //    return  Card(
+        //      child: ListTile(
+        //        leading: CircleAvatar(
+        //          backgroundImage: NetworkImage(users.avatarUrl, scale: 10),
+        //        ),
+        //        title: Text(users.login.toString()),
+        //      ),
+        //    );
+        //  },
+          crossAxisCount: 2,
+          children: List.generate( null == _users ? 0 : _users!.length, (index){
+            return Card(
+              elevation: 5,
+              child: Column(
+                children: [
+           Container(
+             child: CircleAvatar(
+                 radius: 50,
+                     backgroundImage: NetworkImage(_users![index].avatarUrl, scale: 10),
+                    
              ),
-           );
-         }),
+           ),
+           Center(
+                    child: Text(_users![index].login),
+                  ), 
+                  Center(
+                    child: Text(_users![index].type),
+                  ), 
+                  ],
+              ),
+            );
+          }),
+          ),
        ),
       );
   }
